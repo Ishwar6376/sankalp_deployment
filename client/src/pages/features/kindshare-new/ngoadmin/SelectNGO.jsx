@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Building2, ArrowRight } from "lucide-react";
+import { api } from "../../../../lib/api";
 
 const PAGE = { minHeight: "100vh", backgroundColor: "#050510", padding: "32px 40px" };
 const HEADER = { display: "flex", alignItems: "center", gap: "12px", marginBottom: "40px" };
@@ -14,8 +15,8 @@ export default function SelectNGO() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:3000/api/kindshare/ngos/admin-ngos?email=${user.email}`)
-      .then(res => res.json()).then(data => setNgos(data));
+    api.get(`/api/kindshare/ngos/admin-ngos?email=${user.email}`)
+      .then(res => setNgos(res.data));
   }, [user]);
 
   const openDashboard = (ngo) => {

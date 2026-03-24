@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { api } from "../../../../lib/api";
 
 export default function ReceiverComplaintHistory({ ngoId }) {
   const [complaints, setComplaints] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/kindshare/complaints/ngo/${ngoId}`)
-      .then(res => res.json()).then(data => setComplaints(data));
+    api.get(`/api/kindshare/complaints/ngo/${ngoId}`)
+      .then(res => setComplaints(res.data));
   }, [ngoId]);
 
   return (

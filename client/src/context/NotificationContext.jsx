@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from "axios";
+import { api } from "../lib/api";
 
 const NotificationContext = createContext();
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [connectionStatus, setStatus] = useState("Connecting...");
   const { user, isLoading } = useAuth0();
-
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   const markAsRead = async (notificationId) => {
     try {
@@ -23,7 +23,7 @@ export const NotificationProvider = ({ children }) => {
 
 
       
-      await axios.patch(`${API_URL}/api/notifications/${notificationId}/read`);
+      await api.patch(`/api/notifications/${notificationId}/read`);
       
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (err) {
@@ -38,7 +38,7 @@ export const NotificationProvider = ({ children }) => {
 
     const fetchHistory = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/notifications/${safeUserId}`);
+        const res = await api.get(`/api/notifications/${safeUserId}`);
         setNotifications(res.data);
         setUnreadCount(res.data.filter(n => !n.isRead).length);
       } catch (err) {

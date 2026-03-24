@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Shield, CheckCircle } from "lucide-react";
+import { api } from "../../../lib/api";
 
 const STAT = (bgColor) => ({ backgroundColor: `${bgColor}12`, borderRadius: "16px", padding: "24px", border: `1px solid ${bgColor}25`, textAlign: "center" });
 
@@ -8,19 +9,19 @@ export default function KindShareAdmin() {
   const [stats, setStats] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/kindshare/admin/pending-ngos")
-      .then(res => res.json()).then(data => setNgos(data));
-    fetch("http://localhost:3000/api/kindshare/admin/stats")
-      .then(res => res.json()).then(data => setStats(data));
+    api.get("/api/kindshare/admin/pending-ngos")
+      .then(res => setNgos(res.data));
+    api.get("/api/kindshare/admin/stats")
+      .then(res => setStats(res.data));
   }, []);
 
   const approve = async (id) => {
-    await fetch(`http://localhost:3000/api/kindshare/admin/approve/${id}`, { method: "PATCH" });
+    await api.patch(`/api/kindshare/admin/approve/${id}`);
     setNgos(ngos.filter(n => n.id !== id));
   };
 
   const reject = async (id) => {
-    await fetch(`http://localhost:3000/api/kindshare/admin/reject/${id}`, { method: "PATCH" });
+    await api.patch(`/api/kindshare/admin/reject/${id}`);
     setNgos(ngos.filter(n => n.id !== id));
   };
 

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
+import { api } from "../../../lib/api";
 import { ArrowLeft, Package, Gift, Building2, ClipboardList, FileText, Settings, ArrowRight, Handshake } from "lucide-react";
 
 const PAGE = { minHeight: "100vh", backgroundColor: "#050510", padding: "32px 40px" };
@@ -17,8 +18,7 @@ export default function KindShareHome() {
     if (!isAuthenticated || !user) return;
     const checkRole = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/kindshare/users/role?email=${user.email}`);
-        const data = await res.json();
+        const { data } = await api.get(`/api/kindshare/users/role?email=${user.email}`);
         setRole(data.role);
       } catch (err) { console.error(err); }
     };
@@ -27,9 +27,7 @@ export default function KindShareHome() {
 
   const fetchNGO = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/kindshare/ngos/by-email?email=${user.email}`);
-      if (!res.ok) return;
-      const data = await res.json();
+      const { data } = await api.get(`/api/kindshare/ngos/by-email?email=${user.email}`);
       if (data.ngoName) setNgoName(data.ngoName);
     } catch (err) { console.error("Fetch NGO Error:", err); }
   };

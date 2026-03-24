@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { api } from "../../../../lib/api";
 
 const CARD = { backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "16px", padding: "16px", marginBottom: "12px" };
 const BTN = (active, color) => ({ padding: "8px 16px", backgroundColor: active ? `${color}22` : "rgba(255,255,255,0.04)", border: "none", borderRadius: "8px", color: active ? color : "#52525b", fontWeight: "700", fontSize: "12px", cursor: active ? "pointer" : "not-allowed", opacity: active ? 1 : 0.5 });
@@ -10,14 +11,12 @@ export default function DonationRequests({ ngoId }) {
 
   useEffect(() => {
     if (!ngoId) return;
-    fetch(`http://localhost:3000/api/kindshare/donations/ngo/${ngoId}`)
-      .then(res => res.json()).then(data => { setDonations(data); setLoading(false); });
+    api.get(`/api/kindshare/donations/ngo/${ngoId}`)
+      .then(res => { setDonations(res.data); setLoading(false); });
   }, [ngoId]);
 
   const updateStatus = async (id, status) => {
-    await fetch(`http://localhost:3000/api/kindshare/donations/${id}/status`, {
-      method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status })
-    });
+    await api.put(`/api/kindshare/donations/${id}/status`, { status });
     setDonations(prev => prev.map(d => d.id === id ? { ...d, status } : d));
   };
 
