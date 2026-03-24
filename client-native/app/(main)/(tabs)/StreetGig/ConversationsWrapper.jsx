@@ -66,7 +66,7 @@ export default function ConversationsWrapper({ userProfile, userId, onSelectChat
 
     const activeChats = jobRooms.map(([roomId, roomData]) => {
       // Find the "other" member (not the employer)
-      const otherMemberEntry = Object.entries(roomData.members).find(([memberId]) => memberId !== userId);
+      const otherMemberEntry = Object.entries(roomData.members || {}).find(([memberId]) => memberId !== userId);
       
       let lastMsgText = "No messages yet";
       let lastMsgTime = 0;
@@ -116,6 +116,7 @@ export default function ConversationsWrapper({ userProfile, userId, onSelectChat
   const workerChats = Object.entries(allRooms)
     .filter(([roomId, roomData]) => {
       // User must be a participant according to the roomId string
+      if(!roomData || !roomData.members ) return false;
       if (!roomId.includes(userId)) return false;
       
       // The room ID format is: jobId_chat_employerId_workerId. 
@@ -126,7 +127,7 @@ export default function ConversationsWrapper({ userProfile, userId, onSelectChat
       return !isMyOwnJob;
     })
     .map(([roomId, roomData]) => {
-      const otherMemberEntry = Object.entries(roomData.members).find(([memberId]) => memberId !== userId);
+      const otherMemberEntry = Object.entries(roomData.members || {}).find(([memberId]) => memberId !== userId);
       
       let lastMsgText = "No messages yet";
       let lastMsgTime = 0;
