@@ -1,4 +1,4 @@
-import { db } from "../../firebaseadmin/firebaseAdmin.js";
+import { db } from "../../firebaseadmin/firebaseadmin.js";
 import { sendApprovalEmail, sendRejectionEmail } from "./emailService.js";
 
 export const getPendingNGOs = async () => {
